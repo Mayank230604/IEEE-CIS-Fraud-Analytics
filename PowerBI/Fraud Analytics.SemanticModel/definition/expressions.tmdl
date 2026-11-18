@@ -1,0 +1,5 @@
+expression FraudCsvPath = "C:\Data\fraud_analysis_powerbi.csv" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 1249cc86-f6cc-4564-a594-49683793da08
+
+	annotation PBI_ResultType = Text
+

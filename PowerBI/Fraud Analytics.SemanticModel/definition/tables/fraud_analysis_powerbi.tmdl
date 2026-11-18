@@ -1,0 +1,111 @@
+table fraud_analysis_powerbi
+	lineageTag: 02693f1d-0aee-44c2-945d-9b7d4bd6c3fa
+
+	measure 'Total Transactions' = COUNTROWS('fraud_analysis_powerbi')
+		formatString: #,0
+		lineageTag: 4db6aef0-3ffd-4cbd-9f8a-620c01bb9aa0
+
+	measure 'Fraud Transactions' = SUM('fraud_analysis_powerbi'[isFraud])
+		formatString: #,0
+		lineageTag: 99357eb3-1da4-43bf-9120-2a03737cae21
+
+	measure 'Fraud Rate' = DIVIDE([Fraud Transactions], [Total Transactions])
+		formatString: 0.00%
+		lineageTag: a6d1e40f-a899-43f9-9abf-916cb0048928
+
+	measure 'Total Transaction Value' = SUM('fraud_analysis_powerbi'[TransactionAmt])
+		formatString: #,0.00
+		lineageTag: c03f321d-9e83-448a-beea-c677cc9ce484
+
+	measure 'Fraud Transaction Value' = SUM('fraud_analysis_powerbi'[FraudValue])
+		formatString: #,0.00
+		lineageTag: 7ac91968-49d5-4b93-8a94-aa46bb2b5c93
+
+	measure 'Fraud Value Share' = DIVIDE([Fraud Transaction Value], [Total Transaction Value])
+		formatString: 0.00%
+		lineageTag: 82197dc6-5969-490f-9a9b-f07c85143cd1
+
+	column TransactionID
+		dataType: int64
+		lineageTag: e82d7a0d-f6ab-41be-bbaf-a5ae9634706a
+		summarizeBy: none
+		sourceColumn: TransactionID
+
+	column isFraud
+		dataType: int64
+		isHidden
+		lineageTag: ee1eb1cb-aebb-4d52-9f4f-a22134ce5e34
+		summarizeBy: none
+		sourceColumn: isFraud
+
+	column TransactionDT
+		dataType: int64
+		isHidden
+		lineageTag: 82919b10-5607-49a8-8af5-5ab4773c3a7d
+		summarizeBy: none
+		sourceColumn: TransactionDT
+
+	column TransactionAmt
+		dataType: double
+		lineageTag: 8aab41bb-9bf8-4039-a7c2-6c338ff7c109
+		summarizeBy: none
+		sourceColumn: TransactionAmt
+
+	column ProductCD
+		dataType: string
+		lineageTag: c8183270-d9c5-4f70-a073-afd27ed3a334
+		summarizeBy: none
+		sourceColumn: ProductCD
+
+	column card4
+		dataType: string
+		lineageTag: 307bcfa8-1786-4541-b9cd-695843359cfe
+		summarizeBy: none
+		sourceColumn: card4
+
+	column DeviceType
+		dataType: string
+		lineageTag: 6847feeb-3c15-4a12-b327-3bc3ff142da7
+		summarizeBy: none
+		sourceColumn: DeviceType
+
+	column AmountBand
+		dataType: string
+		lineageTag: 518e396e-e681-4e15-9f63-03daf92e158c
+		summarizeBy: none
+		sourceColumn: AmountBand
+		sortByColumn: AmountBandOrder
+
+	column TransactionWeek
+		dataType: int64
+		lineageTag: d6a1d24e-a445-408b-88d3-db2a2da36933
+		summarizeBy: none
+		sourceColumn: TransactionWeek
+
+	column FraudValue
+		dataType: double
+		isHidden
+		lineageTag: 7c08ad8c-e26e-4aba-a56b-65ab001621c6
+		summarizeBy: none
+		sourceColumn: FraudValue
+
+	column AmountBandOrder
+		dataType: int64
+		isHidden
+		lineageTag: cddd4a0c-cfbc-44ac-bbd6-acae43e94784
+		summarizeBy: none
+		sourceColumn: AmountBandOrder
+
+	partition fraud_analysis_powerbi = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(FraudCsvPath), [Delimiter=",", Columns=10, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"TransactionID", Int64.Type}, {"isFraud", Int64.Type}, {"TransactionDT", Int64.Type}, {"TransactionAmt", type number}, {"ProductCD", type text}, {"card4", type text}, {"DeviceType", type text}, {"AmountBand", type text}, {"TransactionWeek", Int64.Type}, {"FraudValue", type number}}, "en-US"),
+				    NormalizedBands = Table.TransformColumns(Typed, {{"AmountBand", each Text.Replace(_, Character.FromNumber(8211), "-"), type text}}),
+				    SortedBands = Table.AddColumn(NormalizedBands, "AmountBandOrder", each List.PositionOf({"0-50","50-100","100-250","250-500","500+"}, [AmountBand]), Int64.Type),
+				    DisplayBands = Table.TransformColumns(SortedBands, {{"AmountBand", each Record.Field([#"0-50"="1 | 0 to <50", #"50-100"="2 | 50 to <100", #"100-250"="3 | 100 to <250", #"250-500"="4 | 250 to <500", #"500+"="5 | 500+"], _), type text}})
+				in
+				    DisplayBands
+
