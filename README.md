@@ -28,7 +28,7 @@ Fraud rate is the share of transactions labeled as fraud. Fraud value share is t
 
 Requires Python with Jupyter and Power BI Desktop on Windows.
 
-1. Download `train_transaction.csv` and `train_identity.csv` from Kaggle and place both files in a `Dataset/` folder at the repository root.
+1. Download `train_transaction.csv` and `train_identity.csv` from Kaggle and place both files in the [Dataset folder](Dataset/) included in the repository.
 2. Install the Python dependencies, then launch Jupyter from the repository root.
 
    ```bash
@@ -48,4 +48,5 @@ To verify the interactive report, select product **C** and device **mobile**. Th
 | [Python/01_data_audit.ipynb](Python/01_data_audit.ipynb) | Data checks, feature preparation, exploratory analysis, and CSV export |
 | [PowerBI/](PowerBI/) | Editable Power BI report and semantic model |
 | [dashboard-preview.png](dashboard-preview.png) | Static preview of the unfiltered analysis |
+| [Dataset/](Dataset/) | Dataset download and placement instructions |
 | [requirements.txt](requirements.txt) | Python dependencies |
