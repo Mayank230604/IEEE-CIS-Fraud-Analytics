@@ -1,8 +1,10 @@
 # IEEE-CIS Transaction Fraud Analytics
 
-An interactive Power BI report and reproducible Python analysis of **590,540 labeled transactions**. The report compares fraud frequency and transaction value across products, card networks, devices, amount bands, and relative weeks.
+An interactive Power BI report and reproducible Python analysis of **590,540 labeled e-commerce transactions**. It answers two questions: which segments have the highest fraud rates, and which account for the most fraudulent transaction value?
 
 ![Unfiltered dashboard preview showing fraud KPIs, weekly trends, card-network exposure, and a product-by-amount matrix](dashboard-preview.png)
+
+The **Fraud Overview** page brings together fraud KPIs, a weekly trend, card-network comparisons, and a product-by-amount matrix. Filter by product or device to explore a segment. For example, **Product C + mobile** shows **29,169 transactions**, **3,834 frauds**, and a **13.14% fraud rate**.
 
 ## Key findings
 
@@ -20,9 +22,13 @@ An interactive Power BI report and reproducible Python analysis of **590,540 lab
 
 ## Data and methodology
 
-The project uses the labeled training data from the [IEEE-CIS Fraud Detection competition on Kaggle](https://www.kaggle.com/competitions/ieee-fraud-detection/data). The Python notebook validates transaction IDs and fraud labels, left-joins identity data by transaction ID, and produces a transaction-level CSV. The Power BI model uses DAX to calculate fraud rates and value shares from filtered totals.
+1. **Source.** The labeled training files come from the [IEEE-CIS Fraud Detection competition on Kaggle](https://www.kaggle.com/competitions/ieee-fraud-detection/data).
+2. **Prepare.** The Python notebook validates transaction IDs and fraud labels, then performs a one-to-one left join on `TransactionID` to preserve all transactions, including those without identity records.
+3. **Report.** The notebook exports one row per transaction. Power BI uses DAX measures to recalculate counts, rates, and value shares as filters change.
 
 Fraud rate is the share of transactions labeled as fraud. Fraud value share is the share of total transaction amount associated with fraud labels. Amounts use the dataset's original units. Missing card network and device values are shown as **Unknown**. Relative week 0 begins at the first recorded transaction. Use the matrix's transaction counts to interpret rates based on small groups.
+
+The findings describe patterns in the labeled training data. Fraudulent transaction value measures the amount on flagged transactions, and rates for small segments can fluctuate.
 
 ## Run locally
 
@@ -38,8 +44,6 @@ Requires Python with Jupyter and Power BI Desktop on Windows.
 
 3. Open [the analysis notebook](Python/01_data_audit.ipynb) and run all cells to generate `Dataset/fraud_analysis_powerbi.csv`.
 4. Open `PowerBI/Fraud Analytics.pbip`. In Power BI Desktop, open **Transform data**, choose **Edit parameters**, and set **FraudCsvPath** to the full path of the generated CSV. Apply the changes and refresh. Keep the `.Report` and `.SemanticModel` folders next to the `.pbip` file.
-
-To verify the interactive report, select product **C** and device **mobile**. The cards should show **29,169 transactions**, **3,834 frauds**, and a **13.14% fraud rate**.
 
 ## Project files
 

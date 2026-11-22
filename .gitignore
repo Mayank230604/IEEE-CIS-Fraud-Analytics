@@ -1,5 +1,6 @@
 /Dataset/*
 !/Dataset/README.md
+/README-interview.md
 *.pbix
 **/.pbi/
 **/.ipynb_checkpoints/
