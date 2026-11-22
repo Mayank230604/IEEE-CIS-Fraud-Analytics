@@ -1,5 +1,10 @@
 # IEEE-CIS Transaction Fraud Analytics
 
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![pandas](https://img.shields.io/badge/pandas-150458?style=flat-square&logo=pandas&logoColor=white)
+![Power BI](https://img.shields.io/badge/Power%20BI-F2C811?style=flat-square)
+![DAX](https://img.shields.io/badge/DAX-334155?style=flat-square)
+
 An interactive Power BI report and reproducible Python analysis of **590,540 labeled e-commerce transactions**. It answers two questions: which segments have the highest fraud rates, and which account for the most fraudulent transaction value?
 
 ![Unfiltered dashboard preview showing fraud KPIs, weekly trends, card-network exposure, and a product-by-amount matrix](dashboard-preview.png)
